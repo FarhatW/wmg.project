@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using wmg.BusinessLayer.Core;
+using wmg.Common.Resources.User;
 
 namespace wmg.BusinessLayer.IManager
 {
-    class IRoleManager
+    public interface IRoleManager : IActionManager<RoleResource>
     {
     }
 }

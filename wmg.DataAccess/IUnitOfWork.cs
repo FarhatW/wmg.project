@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace wmg.DataAccess
 {
-    interface IUnitOfWork
+  public  interface IUnitOfWork
     {
+        Task SaveIntoWmgDbContextAsync();
     }
 }

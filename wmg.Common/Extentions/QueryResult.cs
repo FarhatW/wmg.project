@@ -4,7 +4,12 @@ using System.Text;
 
 namespace wmg.Common.Extentions
 {
-    class QueryResult
+    public class QueryResult<T>
     {
+        public int TotalItems { get; set; }
+
+        public IEnumerable<T> Items { get; set; }
+
     }
 }
+

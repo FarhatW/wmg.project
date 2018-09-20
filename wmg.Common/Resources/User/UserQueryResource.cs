@@ -4,7 +4,8 @@ using System.Text;
 
 namespace wmg.Common.Resources.User
 {
-    class UserQueryResource
+   public class UserQueryResource : FilterResource
     {
+        public int? RoleId { get; set; }
     }
 }
