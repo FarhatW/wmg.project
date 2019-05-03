@@ -13,7 +13,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wmg.BusinessLayer", "wmg.Bu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wmg.Manager", "wmg.Manager\wmg.Manager.csproj", "{79B6A933-2978-4EB8-A659-E34B587A0048}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "wmg.API", "wmg.API\wmg.API.csproj", "{EFC37685-83C0-49AB-9AF6-55327E60DB7C}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "wmg.API", "wmg.API\wmg.API.csproj", "{EFC37685-83C0-49AB-9AF6-55327E60DB7C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

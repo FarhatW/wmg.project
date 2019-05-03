@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmg.DataAccess.dbContext;
 
 namespace wmg.DataAccess.Migrations
 {
     [DbContext(typeof(WmgDbContext))]
-    partial class WmgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190503075729_projects")]
+    partial class projects
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,62 +91,6 @@ namespace wmg.DataAccess.Migrations
                     b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("wmg.Common.Entites.Project", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<int>("DifficultyID");
-
-                    b.Property<TimeSpan>("EndedAt");
-
-                    b.Property<float>("M2Number");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("ProjectTypeId");
-
-                    b.Property<TimeSpan>("StartedAt");
-
-                    b.Property<string>("UpdatedBy");
-
-                    b.Property<DateTime>("UpdatedOn");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("wmg.Common.Entites.ProjectDifficulty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<bool>("IsEnabled");
-
-                    b.Property<string>("LbDifficulty");
-
-                    b.Property<string>("UpdatedBy");
-
-                    b.Property<DateTime>("UpdatedOn");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("ProjectDifficulty");
-                });
-
             modelBuilder.Entity("wmg.Common.Entites.ProjectType", b =>
                 {
                     b.Property<int>("Id")
@@ -157,13 +103,13 @@ namespace wmg.DataAccess.Migrations
 
                     b.Property<float>("Credit");
 
-                    b.Property<bool>("IsEnabled");
-
-                    b.Property<string>("LbProject");
+                    b.Property<string>("LbDifficulty");
 
                     b.Property<string>("UpdatedBy");
 
                     b.Property<DateTime>("UpdatedOn");
+
+                    b.Property<bool>("isEnabled");
 
                     b.HasKey("Id");
 

@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmg.DataAccess.dbContext;
 
 namespace wmg.DataAccess.Migrations
 {
     [DbContext(typeof(WmgDbContext))]
-    partial class WmgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190503152912_projectsdiffmiseajour")]
+    partial class projectsdiffmiseajour
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

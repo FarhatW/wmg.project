@@ -10,6 +10,10 @@ namespace wmg.DataAccess.dbContext
 {
     public class WmgDbContext : IdentityDbContext<User, Role, int, IdentityUserClaim<int>, UserRole, IdentityUserLogin<int>, IdentityRoleClaim<int>, IdentityUserToken<int>>
     {
+        public DbSet<ProjectType> ProjectTypes { get; set; }
+        public DbSet<Project> Projects { get; set; }
+        public DbSet<ProjectDifficulty> ProjectDifficulty { get; set; }
+
         public WmgDbContext(DbContextOptions<WmgDbContext> options)
             : base(options)
         {

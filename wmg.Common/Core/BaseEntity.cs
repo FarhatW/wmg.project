@@ -13,7 +13,6 @@ namespace wmg.Common.Core
             UpdatedOn = DateTime.Now;
         }
 
-        [Required]
         public string CreatedBy { get; set; }
         public DateTime CreatedOn { get; set; }
 

@@ -7,5 +7,6 @@ namespace wmg.Common.Resources.User
    public class UserQueryResource : FilterResource
     {
         public int? RoleId { get; set; }
+        public string Search { get; set; }
     }
 }

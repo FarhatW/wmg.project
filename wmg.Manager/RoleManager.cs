@@ -19,6 +19,8 @@ namespace wmg.Manager
     public class RoleManager : IRoleManager
     {
         private readonly IMapper _mapper;
+        private IRepository<WmgDbContext> Repository { get; }
+        public IUnitOfWork UnitOfWork { get; }
 
         public RoleManager(IMapper mapper, IRepository<WmgDbContext> repository, IUnitOfWork unitOfWork)
         {
@@ -27,9 +29,7 @@ namespace wmg.Manager
             UnitOfWork = unitOfWork;
         }
 
-        private IRepository<WmgDbContext> Repository { get; }
-        public IUnitOfWork UnitOfWork { get; }
-
+        
         public async Task SaveChanges()
         {
             await UnitOfWork.SaveIntoWmgDbContextAsync();
@@ -45,7 +45,7 @@ namespace wmg.Manager
 
             Repository.Remove(role);
             await SaveChanges();
-            await SaveHistoryAction("Delete", resource);
+           // await SaveHistoryAction("Delete", resource);
         }
 
         public Task SaveHistoryAction(string action, ResourceEntity resourceEntity)
@@ -114,7 +114,7 @@ namespace wmg.Manager
             _mapper.Map(resourceEntity, role);
             role.UpdatedOn = DateTime.Now;
             await SaveChanges();
-            await SaveHistoryAction("Update", roleSave);
+            //await SaveHistoryAction("Update", roleSave);
 
             var result = await GetItemById(role.Id);
             return result;

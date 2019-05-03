@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Security.Claims;
@@ -10,6 +11,8 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using wmg.BusinessLayer.IManager;
 using wmg.Common.Core;
 using wmg.Common.Entites;
@@ -17,6 +20,7 @@ using wmg.Common.Extentions;
 using wmg.Common.Query;
 using wmg.Common.Resources;
 using wmg.Common.Resources.User;
+using wmg.Common.Setting;
 using wmg.DataAccess;
 using wmg.DataAccess.dbContext;
 
@@ -32,8 +36,9 @@ namespace wmg.Manager
        
         private IRepository<WmgDbContext> Repository { get; }
         private readonly IUserClaimsPrincipalFactory<User> _claimsFactory;
+        private readonly AuthSetting _optionsUser;
 
-        public UserManager(IUnitOfWork unitOfWork, IMapper mapper, IRoleManager roleManager, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, IRepository<WmgDbContext> repository, IUserClaimsPrincipalFactory<User> claimsFactory)
+        public UserManager(IUnitOfWork unitOfWork, IMapper mapper, IRoleManager roleManager, UserManager<User> userManager, IHttpContextAccessor httpContextAccessor, IRepository<WmgDbContext> repository, IUserClaimsPrincipalFactory<User> claimsFactory, IOptions<AuthSetting> optionsUser)
         {
             UnitOfWork = unitOfWork;
             _mapper = mapper;
@@ -42,6 +47,7 @@ namespace wmg.Manager
             _httpContextAccessor = httpContextAccessor;
             Repository = repository;
             _claimsFactory = claimsFactory;
+            _optionsUser = optionsUser.Value;
         }
 
         public async Task SaveChanges()
@@ -82,25 +88,27 @@ namespace wmg.Manager
             {
                 throw new Exception("role dont exist, valid role is required");
             }
-            var user = new User { UserName = RandomString(5) + "@.aze.com", Email = RandomString(5) + "@.aze.com" };
+
+            var user = _mapper.Map<UserSaveResource, User>(saveUserResource);
+            user.UserName = RandomString(5) + "@.aze.com";
+            user.Email = RandomString(5) + "@.aze.com";
 
             var result = await _userManager.CreateAsync(user, saveUserResource.Password);
             if (!result.Succeeded) throw new Exception(result.Errors.ToString());
-            var mappedUser = _mapper.Map<User, UserSaveResource>(user);
-            mappedUser.Roles = saveUserResource.Roles;
-
-
-            var updatedUser = await Update(user.Id, mappedUser);
+//            var mappedUser = _mapper.Map<User, UserSaveResource>(user);
+//            mappedUser.Roles = saveUserResource.Roles;
+//
+//            var updatedUser = await Update(user.Id, mappedUser);
             var claims = await GetUserClaims(user);
             await _userManager.AddClaimsAsync(user, claims);
-     
-
+            var updatedUser = _mapper.Map<User, UserResource>(user);
+            updatedUser.Token = GetUserToken(claims.ToList());
             return updatedUser;
         }
 
         public async Task<UserResource> Update(int id, ResourceEntity resourceEntity)
         {
-            var saveUserResource = (UserSaveResource)resourceEntity;
+            var updateUserResource = (UpdateUserResource)resourceEntity;
             var user = await Repository.GetOne<User>().Include(u => u.UserRoles)
                 .ThenInclude(vf => vf.Role).FirstOrDefaultAsync(v => v.Id == id);
 
@@ -108,12 +116,12 @@ namespace wmg.Manager
             if (user == null)
                 throw new Exception("user not Found");
 
-            if (saveUserResource.Email != user.Email && EmailExist(saveUserResource.Email))
+            if (updateUserResource.Email != user.Email && EmailExist(updateUserResource.Email))
             {
                 throw new Exception("email exist");
             }
 
-            _mapper.Map(saveUserResource, user);
+            _mapper.Map(updateUserResource, user);
             //await Helper.UpdateUserDatas(saveUserResource, user, this);
 
             await SaveChanges();
@@ -141,7 +149,15 @@ namespace wmg.Manager
             var queryObj = _mapper.Map<UserQueryResource, UserQuery>(queryResource);
 
             result.TotalItems = await query.CountAsync();
-
+            if (queryObj.PageSize == 0)
+            {
+                queryObj.PageSize = result.TotalItems;
+            }
+            else if (!string.IsNullOrEmpty(queryObj.Search))
+            {
+                query = query.Where(s =>
+                    s.UserName.ToLowerInvariant().Contains(queryObj.Search.ToLowerInvariant()));
+            }
             query = query.ApplyOrdering(queryObj, columMap);
 
             query = query.ApplyPaging(queryObj);
@@ -150,6 +166,17 @@ namespace wmg.Manager
 
             return _mapper.Map<QueryResult<User>, QueryResult<UserResource>>(result);
 
+        }
+
+        public async Task<UserResource> GetIUserByEmail(string email)
+        {
+            var user = await Repository.GetOne<User>().Include(v => v.UserRoles)
+                .ThenInclude(vf => vf.Role).FirstOrDefaultAsync(v => v.UserName == email);
+           
+            var result = _mapper.Map<User, UserResource>(user);
+            var principal = await _claimsFactory.CreateAsync(user);
+            result.Token = GetUserToken(principal.Claims.ToList());
+            return result;
         }
 
         public bool EmailExist(string email)
@@ -185,13 +212,28 @@ namespace wmg.Manager
             var principal = await _claimsFactory.CreateAsync(user);
 
             var claims = principal.Claims.ToList();
-            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
-            claims.Add(new Claim(ClaimTypes.Name, user.UserName));
-            claims.Add(new Claim(ClaimTypes.Email, user.Email));
-
-            claims.AddRange(user.UserRoles.Select(item => new Claim(ClaimTypes.Role, item.Role.Name)));
+//            claims.Add(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
+//            claims.Add(new Claim(ClaimTypes.Name, user.UserName));
+//            claims.Add(new Claim(ClaimTypes.Email, user.Email));
+//
+//            claims.AddRange(user.UserRoles.Select(item => new Claim(ClaimTypes.Role, item.Role.Name)));
 
             return claims;
+        }
+
+        private  string GetUserToken(List<Claim> Claims)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_optionsUser.Secret);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(Claims),
+                Expires = DateTime.UtcNow.AddDays(7),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+           return  tokenHandler.WriteToken(token);
+           
         }
 
     }

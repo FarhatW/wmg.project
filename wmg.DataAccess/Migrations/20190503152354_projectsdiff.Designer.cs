@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmg.DataAccess.dbContext;
 
 namespace wmg.DataAccess.Migrations
 {
     [DbContext(typeof(WmgDbContext))]
-    partial class WmgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190503152354_projectsdiff")]
+    partial class projectsdiff
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -159,7 +161,7 @@ namespace wmg.DataAccess.Migrations
 
                     b.Property<bool>("IsEnabled");
 
-                    b.Property<string>("LbProject");
+                    b.Property<string>("LbDifficulty");
 
                     b.Property<string>("UpdatedBy");
 

@@ -14,9 +14,9 @@ namespace wmg.BusinessLayer.Core
     {
         IUnitOfWork UnitOfWork { get; }
         Task SaveChanges();
-        Task Delete(int id);
+       
         Task SaveHistoryAction(string action, ResourceEntity resourceEntity);
-
+        Task Delete(int id);
         Task<T> GetItemById(int id, FilterResource filterResource = null);
         Task<T> Add(ResourceEntity resourceEntity);
         Task<T> Update(int id, ResourceEntity resourceEntity);

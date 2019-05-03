@@ -1,15 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel.DataAnnotations;
 using System.Text;
 using wmg.Common.Core;
-using wmg.Common.Entites;
 
 namespace wmg.Common.Resources.User
 {
-   public class UserResource : ResourceEntity
+    public class UpdateUserResource: ResourceEntity
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public string UserName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
@@ -18,14 +18,16 @@ namespace wmg.Common.Resources.User
         public int AccessFailedCount { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
+        public string Ncnss { get; set; }
+        public string Ncin { get; set; }
         public AddressResource Address { get; set; }
         public string Token { get; set; }
 
-        public ICollection<Role> Roles { get; set; }
+        public ICollection<int> Roles { get; set; }
 
-        public UserResource()
+        public UpdateUserResource()
         {
-            Roles = new Collection<Role>();
+            Roles = new Collection<int>();
         }
     }
 }

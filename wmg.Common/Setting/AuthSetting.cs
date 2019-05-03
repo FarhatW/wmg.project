@@ -4,7 +4,8 @@ using System.Text;
 
 namespace wmg.Common.Setting
 {
-    class AuthSetting
+   public class AuthSetting
     {
+        public string Secret { get; set; }
     }
 }

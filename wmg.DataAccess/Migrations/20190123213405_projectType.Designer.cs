@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using wmg.DataAccess.dbContext;
 
 namespace wmg.DataAccess.Migrations
 {
     [DbContext(typeof(WmgDbContext))]
-    partial class WmgDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190123213405_projectType")]
+    partial class projectType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,50 +91,18 @@ namespace wmg.DataAccess.Migrations
                     b.ToTable("UserTokens");
                 });
 
-            modelBuilder.Entity("wmg.Common.Entites.Project", b =>
+            modelBuilder.Entity("wmg.Common.Entites.ProjectType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("CreatedBy");
+                    b.Property<string>("CreatedBy")
+                        .IsRequired();
 
                     b.Property<DateTime>("CreatedOn");
 
-                    b.Property<int>("DifficultyID");
-
-                    b.Property<TimeSpan>("EndedAt");
-
-                    b.Property<float>("M2Number");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("ProjectTypeId");
-
-                    b.Property<TimeSpan>("StartedAt");
-
-                    b.Property<string>("UpdatedBy");
-
-                    b.Property<DateTime>("UpdatedOn");
-
-                    b.Property<int>("UserId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Projects");
-                });
-
-            modelBuilder.Entity("wmg.Common.Entites.ProjectDifficulty", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<bool>("IsEnabled");
+                    b.Property<float>("Credit");
 
                     b.Property<string>("LbDifficulty");
 
@@ -140,30 +110,7 @@ namespace wmg.DataAccess.Migrations
 
                     b.Property<DateTime>("UpdatedOn");
 
-                    b.HasKey("Id");
-
-                    b.ToTable("ProjectDifficulty");
-                });
-
-            modelBuilder.Entity("wmg.Common.Entites.ProjectType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("CreatedBy");
-
-                    b.Property<DateTime>("CreatedOn");
-
-                    b.Property<float>("Credit");
-
-                    b.Property<bool>("IsEnabled");
-
-                    b.Property<string>("LbProject");
-
-                    b.Property<string>("UpdatedBy");
-
-                    b.Property<DateTime>("UpdatedOn");
+                    b.Property<bool>("isEnabled");
 
                     b.HasKey("Id");
 
@@ -217,22 +164,6 @@ namespace wmg.DataAccess.Migrations
 
                     b.Property<int>("AccessFailedCount");
 
-                    b.Property<string>("Address1")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("Address2");
-
-                    b.Property<string>("AddressExtra");
-
-                    b.Property<string>("Agency")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("City")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("Company")
-                        .HasMaxLength(255);
-
                     b.Property<string>("ConcurrencyStamp")
                         .IsConcurrencyToken();
 
@@ -243,19 +174,9 @@ namespace wmg.DataAccess.Migrations
 
                     b.Property<bool>("EmailConfirmed");
 
-                    b.Property<string>("FirstName")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("LastName")
-                        .HasMaxLength(255);
-
                     b.Property<bool>("LockoutEnabled");
 
                     b.Property<DateTimeOffset?>("LockoutEnd");
-
-                    b.Property<string>("Ncin");
-
-                    b.Property<string>("Ncnss");
 
                     b.Property<string>("NormalizedEmail")
                         .HasMaxLength(256);
@@ -269,15 +190,7 @@ namespace wmg.DataAccess.Migrations
 
                     b.Property<bool>("PhoneNumberConfirmed");
 
-                    b.Property<string>("PostalCode")
-                        .HasMaxLength(255);
-
                     b.Property<string>("SecurityStamp");
-
-                    b.Property<string>("Service")
-                        .HasMaxLength(255);
-
-                    b.Property<string>("StreetNumber");
 
                     b.Property<bool>("TwoFactorEnabled");
 

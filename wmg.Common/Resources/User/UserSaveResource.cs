@@ -26,7 +26,15 @@ namespace wmg.Common.Resources.User
         [Display(Name = "Confirm password")]
         [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
         public string ConfirmPassword { get; set; }
-
+        public string PhoneNumber { get; set; }
+        public bool LockoutEnd { get; set; }
+        public bool LockoutEnabled { get; set; }
+        public int AccessFailedCount { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
+        public string Ncnss { get; set; }
+        public string Ncin { get; set; }
+        public AddressResource Address { get; set; }
         [Required]
         public ICollection<int> Roles { get; set; }
 

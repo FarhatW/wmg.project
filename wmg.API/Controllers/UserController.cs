@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -61,12 +58,12 @@ namespace wmg.API.Controllers
         }
         [AllowAnonymous]
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody]UserSaveResource saveUserResource)
+        public async Task<IActionResult> Update(int id, [FromBody]UpdateUserResource updateUserResource)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
-            return Ok(await _userManager.Update(id, saveUserResource));
+            return Ok(await _userManager.Update(id, updateUserResource));
 
         }
         [HttpPost("authenticate")]
@@ -80,14 +77,15 @@ namespace wmg.API.Controllers
                 return BadRequest(ModelState);
 
             var result = await _signInManager.PasswordSignInAsync(userAuthResource.Email, userAuthResource.Password, userAuthResource.RememberMe, lockoutOnFailure: false);
+           
             if (!result.Succeeded) return BadRequest("cannot login");
-            return Ok();
+            return Ok(await _userManager.GetIUserByEmail(userAuthResource.Email));
         }
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
-            return Ok(_userManager.Delete(id));
+            return Ok(  _userManager.Delete(id));
         }
     }
 }
